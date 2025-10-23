@@ -1,0 +1,6 @@
+{
+  "dfm50n": {
+    "youden": 0.25,
+    "note": "Training-derived cutoff; reused unchanged for validation/test/inference."
+  }
+}

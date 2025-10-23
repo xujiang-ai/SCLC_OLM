@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk prediction of OLM — Combined model</title>
+  <style>
+    body {
+      margin: 0; padding: 20px;
+      font-family: Inter, Arial, sans-serif;
+      background: #f4f8fc; color: #222;
+    }
+    h1 { color: #0b1220; }
+    form { margin-top: 20px; }
+    label { display: block; margin-top: 12px; }
+    input, select {
+      padding: 6px; margin-top: 4px; width: 100%;
+      border: 1px solid #ccc; border-radius: 6px;
+    }
+    button {
+      margin-top: 20px; padding: 10px 16px;
+      background: linear-gradient(135deg, #4db6ff, #2de3b8);
+      border: none; border-radius: 8px; color: #fff;
+      font-size: 1rem; cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    button:hover { transform: translateY(-3px); }
+    #result {
+      margin-top: 20px; padding: 15px; border-radius: 8px;
+      background: #fff; border: 1px solid #ddd;
+    }
+    footer {
+      margin-top: 40px; font-size: 0.8rem; color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Risk prediction of OLM — Combined model</h1>
+  <p>Estimate probability of occult lymph node metastasis (OLM) in early-stage SCLC.</p>
+  
+  <form id="calcForm">
+    <label>Smoking history (Smoke1):
+      <select id="smoke">
+        <option value="0">No</option>
+        <option value="1">Yes</option>
+      </select>
+    </label>
+    <label>Short-axis diameter (Perpendicular, cm):
+      <input type="number" id="perpendicular" step="0.01" value="2.0">
+    </label>
+    <label>Spiculation (Spiculated1):
+      <select id="spiculated">
+        <option value="0">Absent</option>
+        <option value="1">Present</option>
+      </select>
+    </label>
+    <label>DFM50N score:
+      <input type="number" id="dfm" step="0.0001" value="0.5">
+    </label>
+    <button type="button" onclick="computeRisk()">Calculate</button>
+  </form>
+
+  <div id="result"></div>
+
+  <footer>© 2025 SCLC OLM Calculator | Logistic regression model | Threshold = 0.254 (Youden index)</footer>
+
+  <script>
+    function computeRisk() {
+      // coefficients
+      const intercept = -1.34614;
+      const beta_smoke = -0.60818;
+      const beta_perp = -0.33883;
+      const beta_spic = -0.19792;
+      const beta_dfm  = 6.22427;
+      const threshold = 0.254;
+
+      // inputs
+      const smoke = parseFloat(document.getElementById('smoke').value);
+      const perp = parseFloat(document.getElementById('perpendicular').value);
+      const spic = parseFloat(document.getElementById('spiculated').value);
+      const dfm = parseFloat(document.getElementById('dfm').value);
+
+      // logistic regression
+      const logit = intercept + beta_smoke*smoke + beta_perp*perp + beta_spic*spic + beta_dfm*dfm;
+      const prob = 1 / (1 + Math.exp(-logit));
+
+      // classification
+      let riskClass = "";
+      if (prob >= threshold) {
+        riskClass = "<b style='color:red'>High risk (OLM positive)</b>";
+      } else {
+        riskClass = "<b style='color:green'>Low risk (OLM negative)</b>";
+      }
+
+      // show result
+      document.getElementById('result').innerHTML = 
+        "<p><b>Predicted probability of OLM:</b> " + (prob*100).toFixed(2) + "%</p>" +
+        "<p><b>Risk classification (threshold = " + threshold + "):</b> " + riskClass + "</p>";
+    }
+  </script>
+</body>
+</html>

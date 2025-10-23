@@ -1,0 +1,18 @@
+{
+  "dfm50n": {
+    "fcib_version": "1.0.0",
+    "sklearn_version": "1.4.*",
+    "python": "3.9",
+    "geometry": "50×50×50 voxels, 1 mm isotropic; tricubic CT, nearest mask; center = DT-peak/centroid",
+    "features": "9 FCIB embeddings (see dfm50n_rf.cols.json)",
+    "classifier": "RandomForestClassifier (default hyperparameters)",
+    "imputer_scaler": "None",
+    "output": "Continuous class-1 probability (DFM50N_score)",
+    "threshold": {
+      "type": "Youden",
+      "value": 0.25,
+      "fit_on": "training cohort",
+      "reused_for": "validation/test/deployment"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+name: dfm50n
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - numpy=1.26.*
+  - pandas=2.2.*
+  - scikit-learn=1.4.*
+  - nibabel=5.*
+  - scipy
+  - joblib
+  - tqdm
+  - pyyaml
+  - pip
+  - pip:
+      - foundation-cancer-image-biomarker==1.0.0
